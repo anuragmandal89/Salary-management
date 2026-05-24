@@ -1,3 +1,4 @@
+import { AddEmployeeButton } from "@/components/add-employee-button";
 import { EmployeesFilters } from "@/components/employees-filters";
 import { EmployeesTable } from "@/components/employees-table";
 import { PaginationBar } from "@/components/pagination-bar";
@@ -8,6 +9,7 @@ import {
   getEmployeeCount,
 } from "@/lib/employees-meta";
 import { listEmployees } from "@/lib/employees-service";
+import { serializeEmployee } from "@/lib/serialize";
 import { employeeListQuerySchema } from "@/lib/validation";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -33,7 +35,7 @@ export default async function EmployeesPage({
   const parsed = employeeListQuerySchema.safeParse(flat);
   const query = parsed.success
     ? parsed.data
-    : employeeListQuerySchema.parse({}); // fall back to defaults on bad input
+    : employeeListQuerySchema.parse({});
 
   const [
     result,
@@ -55,6 +57,8 @@ export default async function EmployeesPage({
   if (query.department) baseParams.set("department", query.department);
   if (query.jobTitle) baseParams.set("jobTitle", query.jobTitle);
 
+  const items = result.items.map(serializeEmployee);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-2">
@@ -64,6 +68,7 @@ export default async function EmployeesPage({
             {totalAll.toLocaleString()} total employees in the directory.
           </p>
         </div>
+        <AddEmployeeButton />
       </div>
 
       <EmployeesFilters
@@ -72,7 +77,7 @@ export default async function EmployeesPage({
         jobTitles={jobTitles}
       />
 
-      <EmployeesTable employees={result.items} />
+      <EmployeesTable employees={items} />
 
       <PaginationBar
         page={result.page}

@@ -7,12 +7,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { EmployeeRowActions } from "@/components/employee-row-actions";
 import { getCountryName } from "@/lib/countries";
 import { formatSalary } from "@/lib/money";
-import type { Employee } from "@/lib/schema";
+import type { SerializedEmployee } from "@/lib/serialize";
 
 interface Props {
-  employees: Employee[];
+  employees: SerializedEmployee[];
 }
 
 const employmentLabel: Record<string, string> = {
@@ -41,6 +42,7 @@ export function EmployeesTable({ employees }: Props) {
             <TableHead className="text-right">Salary</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Hired</TableHead>
+            <TableHead className="w-12" />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -63,6 +65,9 @@ export function EmployeesTable({ employees }: Props) {
               </TableCell>
               <TableCell className="text-muted-foreground">
                 {e.hireDate}
+              </TableCell>
+              <TableCell>
+                <EmployeeRowActions employee={e} />
               </TableCell>
             </TableRow>
           ))}

@@ -14,8 +14,9 @@ export function toMajor(minor: number): number {
   return minor / MINOR_UNITS_PER_MAJOR;
 }
 
+/** Format a salary expressed in MAJOR currency units (e.g. 100000 → "$100,000"). */
 export function formatSalary(
-  minor: number,
+  major: number,
   currency: string,
   locale = "en-US"
 ): string {
@@ -23,5 +24,5 @@ export function formatSalary(
     style: "currency",
     currency,
     maximumFractionDigits: 0,
-  }).format(toMajor(minor));
+  }).format(major);
 }
